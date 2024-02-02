@@ -28,3 +28,28 @@ spec:
       interval: 1m
   values:
     replicaCount: 2
+    image:
+      registry: docker.io
+      repository: bitnami/wordpress
+      tag: 6.4.2-debian-11-r19 # {"$imagepolicy": "flux-system:wordpress:tag"}
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: wordpress
+  namespace: flux-system
+spec:
+  image: docker.io/bitnami/wordpress
+  interval: 5m
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: wordpress
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: wordpress
+  policy:
+    semver:
+      range: '>=6.0.0 <7.0.0'
